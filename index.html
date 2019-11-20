@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>CSS Variables</title>
+  </head>
+  <body>
+    <style>
+      :root {
+        --gradient-from: #3a623a;
+        --gradient-to: #acabad;
+        --spacing: 10px;
+        --blur: 10px;
+        --degrees: 0deg;
+      }
+
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        width: 100vw;
+        overflow-x: hidden;
+        font-family: 'Courier New', Courier, monospace;
+        background-image: linear-gradient(#59307a, #99014d);
+      }
+
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .inputs {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+      }
+
+      label {
+        font-size: 20px;
+      }
+
+      h1 {
+        font-size: 60px;
+      }
+
+      img {
+        background-image: linear-gradient(
+          var(--degrees),
+          var(--gradient-from),
+          var(--gradient-to)
+        );
+        padding: var(--spacing);
+        filter: blur(var(--blur));
+        margin: 0 auto;
+        display: block;
+      }
+    </style>
+
+    <h1>CSS Variables!</h1>
+    <div>
+      <div style="display: none" class="inputs">
+        <label for="blur">Blur:</label>
+        <input
+          type="range"
+          name="blur"
+          min="0"
+          max="50"
+          value="10"
+          id="blur"
+          data-suffix="px"
+        />
+
+        <label for="spacing">Spacing:</label>
+        <input
+          type="range"
+          name="spacing"
+          min="0"
+          max="150"
+          value="10"
+          id="spacing"
+          data-suffix="px"
+        />
+
+        <label for="base-color">Gradient from:</label>
+        <input
+          type="color"
+          name="gradient-from"
+          value="#3a623a"
+          id="gradient-from"
+        />
+        <label for="base-color">Gradient to:</label>
+        <input
+          type="color"
+          name="gradient-to"
+          value="#ACABAD"
+          id="gradient-to"
+        />
+        <label for="degrees">Degrees:</label>
+        <input
+          type="range"
+          max="360"
+          min="0"
+          value="0"
+          name="degrees"
+          id="degrees"
+          data-suffix="deg"
+        />
+      </div>
+
+      <div id="images"></div>
+    </div>
+
+    <script>
+      const inputs = document.querySelectorAll('input')
+
+      const imagesContainer = document.querySelector('#images')
+      for (let i = 0; i < 10; ++i) {
+        const inputCopy = document.querySelector('.inputs').cloneNode(true)
+
+        const image = document.createElement('img')
+        const randomId = Math.ceil(Math.random() * 100)
+        image.src = `https://picsum.photos/id/${randomId}/800/800`
+        image.alt = `image${randomId}`
+
+        function updateThisImgVariables() {
+          const suffix = this.dataset.suffix || ''
+          image.style.setProperty(`--${this.name}`, `${this.value}${suffix}`)
+        }
+
+        inputCopy.querySelectorAll('input').forEach(child => {
+          child.addEventListener('change', updateThisImgVariables)
+          child.addEventListener('mousemove', updateThisImgVariables)
+        })
+
+        inputCopy.style.setProperty('display', 'flex')
+        imagesContainer.appendChild(inputCopy)
+        imagesContainer.appendChild(image)
+      }
+    </script>
+  </body>
+</html>
